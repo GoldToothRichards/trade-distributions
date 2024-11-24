@@ -1,0 +1,76 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read files from public/trade_plots
+const plotsDir = path.join(process.cwd(), 'public', 'trade_plots');
+const files = fs.readdirSync(plotsDir)
+  .filter(file => file.endsWith('.html'))
+  .map(file => ({
+    filename: file,
+    label: file
+      .replace('.html', '')
+      .split('_')
+      .map(word => word.charAt(0) + word.slice(1))
+      .join(' / ')
+  }));
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Trade Distributions</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  </head>
+  <body class="min-h-screen bg-gray-100 p-8">
+    <div class="mx-auto">
+      <h1 class="text-3xl font-bold mb-8 text-gray-800">Trade Distributions</h1>
+      
+      <!-- Trading pair selector -->
+      <div class="mb-6">
+        <select 
+          id="chartSelect" 
+          class="w-full p-3 border rounded-lg shadow-sm bg-white"
+        >
+          <option value="">Select a trading pair</option>
+          {files.map(({filename, label}) => (
+            <option value={`/trade_plots/${filename}`}>{label}</option>
+          ))}
+        </select>
+      </div>
+
+      <!-- Trading pair chart -->
+      <div id="chartFrame" class="hidden">
+        <div class="flex justify-center items-center w-full">
+          <iframe 
+            id="chartIframe"
+            class="bg-white"
+            style="width: 1100px; height: 1100px; max-width: 95vw; border: none;"
+            src=""
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const select = document.getElementById('chartSelect') as HTMLSelectElement;
+      const chartFrame = document.getElementById('chartFrame');
+      const iframe = document.getElementById('chartIframe') as HTMLIFrameElement;
+
+      // Add event listener to the select chart
+      if (select && chartFrame && iframe) {
+        select.addEventListener('change', (e) => {
+          const selectedValue = (e.target as HTMLSelectElement).value;
+          if (selectedValue) {
+            iframe.src = selectedValue;
+            chartFrame.classList.remove('hidden');
+          } else {
+            chartFrame.classList.add('hidden');
+            iframe.src = '';
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
