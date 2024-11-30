@@ -16,8 +16,9 @@ Explore the results in the live demo - [https://trade-distributions.vercel.app](
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Astro](https://astro.build)
+- **Framework**: Astro
 - **Styling**: Tailwind CSS
+- **Charts**: Plotly
 - **Deployment**: Vercel
 
 ## 🏗️ Local Development
